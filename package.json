@@ -1,0 +1,28 @@
+{
+  "name": "web-crawler",
+  "version": "1.0.0",
+  "description": "Project to better understand https...",
+  "main": "index.js",
+  "scripts": {
+    "start": "node main.js",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Gabs-Maia/web-crawler.git"
+  },
+  "keywords": [
+    "web-crawler",
+    "data-mining",
+    "https"
+  ],
+  "author": "Gabriel Maia",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Gabs-Maia/web-crawler/issues"
+  },
+  "homepage": "https://github.com/Gabs-Maia/web-crawler#readme",
+  "dependencies": {
+    "jest": "^29.7.0"
+  }
+}
