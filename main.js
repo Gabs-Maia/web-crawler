@@ -13,8 +13,13 @@ function main(){
     }
     const input_url = process.argv[2];
 
-    console.log(`Starting to crawl ${input_url}`);  
-    crawl_page(input_url);    
-}
+    console.log(`Starting to crawl :- ${input_url}`);  
+    const pages = crawl_page(input_url, input_url, {});
+
+    for(const page of pages){
+        console.log(page);
+    }
+    
+}   
 
 main();

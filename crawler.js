@@ -3,7 +3,11 @@ const axios = require('axios');
 const cheerio = require('cheerio');
 const {JSDOM} = require('jsdom');
 
-async function crawl_page(current_url){
+async function crawl_page(input_url, current_url, pages){
+    console.log(`Crawling page :- ${current_url}`);
+
+    const input_url_obj = new URL(input_url);
+    const current_url_obj = new URL(current_url);
     try{
         const response = await fetch(current_url);
         if(response.status > 399){
@@ -15,6 +19,13 @@ async function crawl_page(current_url){
         if(!content_type.includes("text/html")){
             console.log();
             return
+        }
+
+        const html_body = await response.text()
+        const next_urls = get_urls_from(html_body, input_url);
+
+        for(next_url of next_urls) {
+            let pages = await crawl_page(input_url, next_url, pages)
         }
 
     }catch (error){
