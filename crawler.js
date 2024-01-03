@@ -1,7 +1,26 @@
 //Normalize urls when needed...
-const cheerio = require('cheerio');
 const axios = require('axios');
+const cheerio = require('cheerio');
 const {JSDOM} = require('jsdom');
+
+async function crawl_page(current_url){
+    try{
+        const response = await fetch(current_url);
+        if(response.status > 399){
+            console.log(`Error found on page :- ${current_url}`);
+            return
+        }
+
+        let content_type = response.headers.get("content-type");
+        if(!content_type.includes("text/html")){
+            console.log();
+            return
+        }
+
+    }catch (error){
+        console.error('msg')
+    }
+}
 
 function get_urls_from(html_body, input_url){
 
@@ -35,7 +54,7 @@ function get_urls_from(html_body, input_url){
 async function get_urls(url){
     try{
     let urls = [];
-    let{data} = axios.get(url);
+    let{data} = await axios.get(url);
     let load = cheerio.load(data);
     let a_tags = load("body");
 
@@ -68,5 +87,6 @@ function normalURL(url_string){
 module.exports = {
 
     normalURL,
-    get_urls_from
+    get_urls_from,
+    crawl_page
 }
