@@ -12,10 +12,10 @@ async function main(){
         console.log("Too many arguments!");
         process.exit(1);
     }
-    const input_url = process.argv[2];
+    const base_url = process.argv[2];
 
-    console.log(`Starting to crawl :- ${input_url}`);  
-    const pages = await crawl_page(input_url, input_url, {});
+    console.log(`Starting to crawl :- ${base_url}`);  
+    const pages = await crawl_page(base_url, base_url, {});
 
     console.log(pages);
 

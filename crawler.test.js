@@ -2,30 +2,30 @@ const {normalURL, get_urls_from} = require('./crawler.js')
 const {test, expect} = require('@jest/globals')
 
 test('normalURL strip', () => {
-    const input_url = 'https://blog.boot.dev/path';
-    const output_url = normalURL(input_url);
+    const base_url = 'https://blog.boot.dev/path';
+    const output_url = normalURL(base_url);
     const expected_url = 'blog.boot.dev/path';
     //comparing urls in output and expectations... Jest will test it.
     expect(output_url).toEqual(expected_url);
 })
 
 test('normalURL strip trailing slash', () => {
-    const input_url = 'https://blog.boot.dev/path/';
-    const output_url = normalURL(input_url);
+    const base_url = 'https://blog.boot.dev/path/';
+    const output_url = normalURL(base_url);
     const expected_url = 'blog.boot.dev/path/';
     expect(output_url).toEqual(expected_url);
 })
 
 test('normalURL capitals', () => {
-    const input_url = 'https://BLOG.boot.dev/path';
-    const output_url = normalURL(input_url);
+    const base_url = 'https://BLOG.boot.dev/path';
+    const output_url = normalURL(base_url);
     const expected_url = 'blog.boot.dev/path';
     expect(output_url).toEqual(expected_url);
 })
 
 test('normalURL strip http', () => {
-    const input_url = 'http://blog.maia.dev/path';
-    const output_url = normalURL(input_url);
+    const base_url = 'http://blog.maia.dev/path';
+    const output_url = normalURL(base_url);
     const expected_url = 'blog.maia.dev/path';
     expect(output_url).toEqual(expected_url);
 })
@@ -40,8 +40,8 @@ test('get_urls_from', () =>{
         </body>
     </html>
     `
-    const input_url = "https://blog.maia.dev"
-    const outputed = get_urls_from(html_body, input_url);
+    const base_url = "https://blog.maia.dev"
+    const outputed = get_urls_from(html_body, base_url);
     const expected = ["https://blog.maia.dev/"];
     expect(outputed).toEqual(expected);
 })
@@ -56,8 +56,8 @@ test('get_urls_from absolute', () =>{
         </body>
     </html>
     `
-    const input_url = "https://blog.maia.dev/path/"
-    const outputed = get_urls_from(html_body, input_url);
+    const base_url = "https://blog.maia.dev/path/"
+    const outputed = get_urls_from(html_body, base_url);
     const expected = ["https://blog.maia.dev/path/"];
     expect(outputed).toEqual(expected);
 })
@@ -72,8 +72,8 @@ test('get_urls_from relative', () =>{
         </body>
     </html>
     `
-    const input_url = "https://blog.maia.dev"
-    const outputed = get_urls_from(html_body, input_url);
+    const base_url = "https://blog.maia.dev"
+    const outputed = get_urls_from(html_body, base_url);
     const expected = ["https://blog.maia.dev/path/"];
     expect(outputed).toEqual(expected);
 })
@@ -91,8 +91,8 @@ test('get_urls_from both', () =>{
         </body>
     </html>
     `
-    const input_url = "https://blog.maia.dev"
-    const outputed = get_urls_from(html_body, input_url);
+    const base_url = "https://blog.maia.dev"
+    const outputed = get_urls_from(html_body, base_url);
     const expected = ["https://blog.maia.dev/path1/", "https://blog.maia.dev/path2/"];
     expect(outputed).toEqual(expected);
 })
@@ -107,8 +107,8 @@ test('get_urls_from invalid', () =>{
         </body>
     </html>
     `
-    const input_url = "https://blog.maia.dev"
-    const outputed = get_urls_from(html_body, input_url);
+    const base_url = "https://blog.maia.dev"
+    const outputed = get_urls_from(html_body, base_url);
     const expected = [];
     expect(outputed).toEqual(expected);
 })
