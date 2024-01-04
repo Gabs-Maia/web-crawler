@@ -1,6 +1,3 @@
-//Normalize urls when needed...
-const axios = require('axios');
-const cheerio = require('cheerio');
 const {JSDOM} = require('jsdom');
 
 async function crawl_page(input_url, current_url, pages){
@@ -8,29 +5,39 @@ async function crawl_page(input_url, current_url, pages){
 
     const input_url_obj = new URL(input_url);
     const current_url_obj = new URL(current_url);
+
+    if(input_url_obj.hostname !== current_url_obj.hostname){
+        return pages;
+    }
+    const normal_current_url = normalURL(current_url);
+    if(pages[normal_current_url] > 0){
+        pages[normal_current_url]++;
+        return pages;
+    }
+    pages[normal_current_url] = 1;
+    console.log(`NOW... Crawling :- ${current_url}`);
+
     try{
         const response = await fetch(current_url);
         if(response.status > 399){
-            console.log(`Error found on page :- ${current_url}`);
-            return
+            console.log(`Error found on PAGE :- ${current_url} --> ${response.status}`);
+            return pages
         }
-
         let content_type = response.headers.get("content-type");
         if(!content_type.includes("text/html")){
-            console.log();
-            return
+            console.log(`Non HTML response, CONTENT TYPE: ${response.status} On Page: ${current_url}`);
+            return pages
         }
-
-        const html_body = await response.text()
+        const html_body = await response.text();
         const next_urls = get_urls_from(html_body, input_url);
 
-        for(next_url of next_urls) {
-            let pages = await crawl_page(input_url, next_url, pages)
+        for(const next_url of next_urls) {
+            let pages = await crawl_page(input_url, next_url, pages);
         }
-
     }catch (error){
-        console.error('msg')
+        console.log(`Error :- ${error.message}, ON page: ${current_url}`);
     }
+    return pages;
 }
 
 function get_urls_from(html_body, input_url){
@@ -40,54 +47,27 @@ function get_urls_from(html_body, input_url){
     const links = dom.window.document.querySelectorAll('a');
 
     for(const link of links){
-
         if(link.href.slice(0, 1) === '/'){
-
             try{
                 const url_obj = new URL(`${input_url}${link.href}`);
                 urls.push(url_obj.href);
             }catch(err){
-                console.log(`error with relative url :- ${err.message}`);
+                console.log(`Error with **RELATIVE** url :- ${err.message}`);
             }
         }else{
             try{
-
                 const url_obj = new URL(link.href);
                 urls.push(url_obj.href);
             }catch (err){
-                console.log(`error with absolute url :- ${err.message}`);
+                console.log(`Error with **ABSOLUTE** url :- ${err.message}`);
             }
         }
     }
     return urls;
 }
 
-async function get_urls(url){
-    try{
-    let urls = [];
-    let{data} = await axios.get(url);
-    let load = cheerio.load(data);
-    let a_tags = load("body");
-
-    for(let i = 0; i < a_tags.length; i ++){
-
-        let href = load(a_tags).find("a").attr("href");
-
-        if(href !== null){
-            urls.push(href);
-        }else{
-            return urls;
-        }
-    }
-    return urls;    
-}catch(error){
-    console.error(`Could not conclude the operations due to :- ${error}`);
-}
-}
-
-function normalURL(url_string){
-    
-    const objURL = new URL(url_string);
+function normalURL(input_url){    
+    const objURL = new URL(input_url);
     const hostPath = `${objURL.hostname}${objURL.pathname}`;
     if(hostPath.length > 0 && hostPath.slice(0,-1) === '/'){
         //no last character
